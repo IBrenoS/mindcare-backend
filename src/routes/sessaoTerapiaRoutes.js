@@ -1,10 +1,10 @@
 const express = require("express");
 const SessaoTerapia = require("../models/sessaoTerapia");
-const { proteger, autorizar } = require("../middlewares/authMiddleware");
+const proteger = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 // Criar uma nova sessão de terapia
-router.post("/", proteger, async (req, res) => {
+router.post("/", proteger(), async (req, res) => {
   const { nomeTerapeuta, dataSessao, anotacoesSessao, feedback } = req.body;
 
   try {
@@ -23,7 +23,7 @@ router.post("/", proteger, async (req, res) => {
 });
 
 // Obter todas as sessões de terapia do usuário
-router.get("/", proteger, autorizar(["admin"]), async (req, res) => {
+router.get("/", proteger(["admin"]), async (req, res) => {
   try {
     const sessoes = await SessaoTerapia.find({ usuario: req.usuario._id });
     res.json(sessoes);
@@ -33,7 +33,7 @@ router.get("/", proteger, autorizar(["admin"]), async (req, res) => {
 });
 
 // Obter uma sessão de terapia específica
-router.get("/perfil", proteger, async (req, res) => {
+router.get("/perfil", proteger(), async (req, res) => {
   try {
     const sessao = await SessaoTerapia.findById(req.params.id);
     if (!sessao || sessao.usuario.toString() !== req.usuario._id.toString()) {
@@ -46,7 +46,7 @@ router.get("/perfil", proteger, async (req, res) => {
 });
 
 // Atualizar uma sessão de terapia
-router.put("/perfil", proteger, async (req, res) => {
+router.put("/perfil", proteger(), async (req, res) => {
   const { nomeTerapeuta, dataSessao, anotacoesSessao, feedback } = req.body;
 
   try {
@@ -62,7 +62,7 @@ router.put("/perfil", proteger, async (req, res) => {
 });
 
 // Deletar uma sessão de terapia
-router.delete("/perfil", proteger, async (req, res) => {
+router.delete("/perfil", proteger(), async (req, res) => {
   try {
     const sessao = await SessaoTerapia.findById(req.params.id);
     if (!sessao || sessao.usuario.toString() !== req.usuario._id.toString()) {

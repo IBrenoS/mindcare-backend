@@ -1,10 +1,10 @@
 const express = require("express");
 const Autoavaliacao = require("../models/autoavaliacao");
-const { proteger, autorizar } = require("../middlewares/authMiddleware");
+const proteger = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 // Criar uma nova autoavaliação
-router.post("/", proteger, async (req, res) => {
+router.post("/", proteger(), async (req, res) => {
   const { resultados, feedback } = req.body;
 
   try {
@@ -21,7 +21,7 @@ router.post("/", proteger, async (req, res) => {
 });
 
 // Obter todas as autoavaliações do usuário
-router.get("/", proteger, autorizar(["admin"]), async (req, res) => {
+router.get("/", proteger(["admin"]), async (req, res) => {
   try {
     const autoavaliacoes = await Autoavaliacao.find({
       usuario: req.usuario._id,
@@ -33,7 +33,7 @@ router.get("/", proteger, autorizar(["admin"]), async (req, res) => {
 });
 
 // Obter uma autoavaliação específica
-router.get("/perfil", proteger, async (req, res) => {
+router.get("/perfil", proteger(), async (req, res) => {
   try {
     const autoavaliacao = await Autoavaliacao.findById(req.params.id);
     if (
@@ -49,7 +49,7 @@ router.get("/perfil", proteger, async (req, res) => {
 });
 
 // Atualizar uma autoavaliação
-router.put("/perfil", proteger, async (req, res) => {
+router.put("/perfil", proteger(), async (req, res) => {
   const { resultados, feedback } = req.body;
 
   try {
@@ -65,7 +65,7 @@ router.put("/perfil", proteger, async (req, res) => {
 });
 
 // Deletar uma autoavaliação
-router.delete("/perfil", proteger, async (req, res) => {
+router.delete("/perfil", proteger(), async (req, res) => {
   try {
     const autoavaliacao = await Autoavaliacao.findById(req.params.id);
     if (

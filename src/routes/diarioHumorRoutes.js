@@ -1,10 +1,10 @@
 const express = require("express");
 const DiarioHumor = require("../models/diarioHumor");
-const { proteger, autorizar } = require("../middlewares/authMiddleware");
+const proteger = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 // Criar uma nova entrada no diário de humor
-router.post("/", proteger, async (req, res) => {
+router.post("/", proteger(), async (req, res) => {
   const { humor, anotacoes } = req.body;
 
   try {
@@ -21,7 +21,7 @@ router.post("/", proteger, async (req, res) => {
 });
 
 // Obter todas as entradas do diário de humor do usuário
-router.get("/", autorizar(["admin"]), proteger, async (req, res) => {
+router.get("/", proteger(["admin"]), async (req, res) => {
   try {
     const entradas = await DiarioHumor.find({ usuario: req.usuario._id });
     res.json(entradas);
@@ -31,7 +31,7 @@ router.get("/", autorizar(["admin"]), proteger, async (req, res) => {
 });
 
 // Obter uma entrada específica do diário de humor
-router.get("/perfil", proteger, async (req, res) => {
+router.get("/perfil", proteger(), async (req, res) => {
   try {
     const entrada = await DiarioHumor.findById(req.params.id);
     if (!entrada || entrada.usuario.toString() !== req.usuario._id.toString()) {
@@ -44,7 +44,7 @@ router.get("/perfil", proteger, async (req, res) => {
 });
 
 // Atualizar uma entrada no diário de humor
-router.put("/perfil", proteger, async (req, res) => {
+router.put("/perfil", proteger(), async (req, res) => {
   const { humor, anotacoes } = req.body;
 
   try {
@@ -60,7 +60,7 @@ router.put("/perfil", proteger, async (req, res) => {
 });
 
 // Deletar uma entrada no diário de humor
-router.delete("/perfil", proteger, async (req, res) => {
+router.delete("/perfil", proteger(), async (req, res) => {
   try {
     const entrada = await DiarioHumor.findById(req.params.id);
     if (!entrada || entrada.usuario.toString() !== req.usuario._id.toString()) {

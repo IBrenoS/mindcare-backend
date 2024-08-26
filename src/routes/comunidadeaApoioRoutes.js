@@ -1,10 +1,10 @@
 const express = require("express");
 const ComunidadeApoio = require("../models/ComunidadeApoio");
-const { proteger, autorizar } = require("../middlewares/authMiddleware");
+const proteger = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 // Criar uma nova postagem na comunidade de apoio
-router.post("/", proteger, async (req, res) => {
+router.post("/", proteger(), async (req, res) => {
   const { conteudo } = req.body;
 
   try {
@@ -20,7 +20,7 @@ router.post("/", proteger, async (req, res) => {
 });
 
 // Obter todas as postagens da comunidade de apoio
-router.get("/", proteger, autorizar(["admin"]), async (req, res) => {
+router.get("/", proteger(["admin"]), async (req, res) => {
   try {
     const postagens = await ComunidadeApoio.find().populate("usuario", "nome");
     res.json(postagens);
@@ -30,7 +30,7 @@ router.get("/", proteger, autorizar(["admin"]), async (req, res) => {
 });
 
 // Obter uma postagem específica da comunidade de apoio
-router.get("/perfil", proteger, async (req, res) => {
+router.get("/perfil", proteger(), async (req, res) => {
   try {
     const postagem = await ComunidadeApoio.findById(req.params.id).populate(
       "usuario",
@@ -46,7 +46,7 @@ router.get("/perfil", proteger, async (req, res) => {
 });
 
 // Atualizar uma postagem da comunidade de apoio
-router.put("/perfil", proteger, async (req, res) => {
+router.put("/perfil", proteger(), async (req, res) => {
   const { conteudo } = req.body;
 
   try {

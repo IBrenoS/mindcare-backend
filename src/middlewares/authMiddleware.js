@@ -22,23 +22,16 @@ const proteger = (roles = []) => {
 
         next();
       } catch (error) {
-        res.status(401).json({ mensagem: "Não autorizado, token inválido" });
+        return res
+          .status(401)
+          .json({ mensagem: "Não autorizado, token inválido" });
       }
     }
 
     if (!token) {
-      res.status(401).json({ mensagem: "Não autorizado, sem token" });
+      return res.status(401).json({ mensagem: "Não autorizado, sem token" });
     }
   };
 };
 
-const autorizar = (roles = []) => {
-  return (req, res, next) => {
-    if (roles.length && !roles.includes(req.usuario.role)) {
-      return res.status(403).json({ mensagem: "Acesso negado" });
-    }
-    next();
-  };
-};
-
-module.exports = { proteger, autorizar };
+module.exports = proteger;
